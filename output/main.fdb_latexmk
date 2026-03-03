@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1772533926.4408 "/Users/dluhidaniel/DOCUMENTATION/output/main.tex" "main.pdf" "main" 1772533927.25695 0
-  "/Users/dluhidaniel/DOCUMENTATION/output/main.tex" 1772533924.23289 35296 8651c47e2467ceaea2808ba937400d52 ""
+["pdflatex"] 1772541619.78955 "/Users/dluhidaniel/DOCUMENTATION/output/main.tex" "main.pdf" "main" 1772541620.5137 0
+  "/Users/dluhidaniel/DOCUMENTATION/output/main.tex" 1772541619.4213 34057 a92e0eb8cff6db41a492949fbc37c5de ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc" 1254269338 2375 baa924870cfb487815765f9094cf3728 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc" 1202520719 2840 216e6e45ad352e2456e1149f28885bee ""
   "/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc" 1254269338 3031 6c4d3515bf7115d8518af1c9ab97ca44 ""
@@ -36,7 +36,6 @@
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/lm/rm-lmr7.tfm" 1254269338 11852 5a9022f105fd1ee2797df861e79ae9a0 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/lm/rm-lmr8.tfm" 1254269338 11864 309fd7f43e4a0ba39f6f7644d76e8edf ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/lm/ts1-lmtt12.tfm" 1254269338 1320 b8ed9b23de7a469502bf5938ddfeb636 ""
-  "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb" 1248133631 31764 459c573c03a4949a528c2cc7f557e217 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx12.pfb" 1255129361 116908 1fca96723793882c2e0160350c192fc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmcsc10.pfb" 1255129361 116427 4a5b1ccaa7cce719091920a86b58608d ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr12.pfb" 1255129361 113634 f99c44d58bae0863375faf0e1d74d612 ""
@@ -132,10 +131,10 @@
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
   "figures/Logo.jpg" 1772533685.29927 280936 9944a4bafda5b2cb172311f60de25d06 ""
   "kando-logo-hu.pdf" 1772533685.29632 7286 9ded0f3f1501917e96c30663ce585727 ""
-  "main.aux" 1772533927.18016 9925 16eebe88adfb732d0dc130926154abc0 "pdflatex"
-  "main.out" 1772533927.18149 5545 2cb770aaba221f3e4df2f26a82b5ec20 "pdflatex"
-  "main.tex" 1772533924.23289 35296 8651c47e2467ceaea2808ba937400d52 ""
-  "main.toc" 1772533927.18174 5508 24617bb5d3b0039228ad54bfbc5f3f4b "pdflatex"
+  "main.aux" 1772541620.44433 5945 4f6c5a6fb50460b970d347aa91f73734 "pdflatex"
+  "main.out" 1772541620.44526 4103 de5115ba2ad3ae6f2ce02d87ce7039b6 "pdflatex"
+  "main.tex" 1772541619.4213 34057 a92e0eb8cff6db41a492949fbc37c5de ""
+  "main.toc" 1772541620.44551 2488 8d962d4e2a735623ce3a7408bed489dc "pdflatex"
   "thesis-kando.cls" 1772533685.29314 15049 4bdc9c741dcc646cad085cd43e6d0172 ""
   (generated)
   "main.aux"

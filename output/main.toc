@@ -1,48 +1,24 @@
-\select@language {magyar} \contentsline {chapter}{\numberline {1}Bevezetés, a szoftver célja}{4}{chapter.1}%
-\select@language {magyar} \contentsline {chapter}{\numberline {2}Probléma --- Megoldás}{5}{chapter.2}%
-\select@language {magyar} \contentsline {section}{\numberline {2.1}A probléma megfogalmazása}{5}{section.2.1}%
-\select@language {magyar} \contentsline {section}{\numberline {2.2}A megoldás}{5}{section.2.2}%
-\select@language {magyar} \contentsline {chapter}{\numberline {3}A program technológiai háttere}{7}{chapter.3}%
-\select@language {magyar} \contentsline {section}{\numberline {3.1}Eszközök és keretrendszerek}{7}{section.3.1}%
-\select@language {magyar} \contentsline {subsection}{\numberline {3.1.1}Frontend}{7}{subsection.3.1.1}%
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.1.1.1}Vue.js + Inertia.js (webes kliens)}{7}{subsubsection.3.1.1.1}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.1.1.1}Miért Vue.js + Inertia.js?}{7}{paragraph.3.1.1.1.1}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.1.1.2}Hogyan működik?}{8}{paragraph.3.1.1.1.2}%
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.1.1.2}MAUI frontend kliens alkalmazás}{8}{subsubsection.3.1.1.2}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.1.2.1}Szerepe}{8}{paragraph.3.1.1.2.1}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.1.2.2}Hogyan működik?}{8}{paragraph.3.1.1.2.2}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.1.2.3}Miért MAUI?}{9}{paragraph.3.1.1.2.3}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.1.2.4}A MAUI kliens és a webes kliens közötti lényeges különbség}{9}{paragraph.3.1.1.2.4}%
-\select@language {magyar} \contentsline {subsection}{\numberline {3.1.2}Backend}{9}{subsection.3.1.2}%
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.1.2.1}Laravel}{9}{subsubsection.3.1.2.1}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.2.1.1}Miért Laravel?}{9}{paragraph.3.1.2.1.1}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.2.1.2}Hogyan működik?}{10}{paragraph.3.1.2.1.2}%
-\select@language {magyar} \contentsline {subsection}{\numberline {3.1.3}Adatbázis}{11}{subsection.3.1.3}%
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.1.3.1}MySQL --- InnoDB tárolómotor}{11}{subsubsection.3.1.3.1}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.3.1.1}Miért MySQL?}{11}{paragraph.3.1.3.1.1}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.3.1.2}Az adatbázis séma}{11}{paragraph.3.1.3.1.2}%
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.1.3.2}phpMyAdmin}{12}{subsubsection.3.1.3.2}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.3.2.1}Miért phpMyAdmin?}{12}{paragraph.3.1.3.2.1}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.3.2.2}Hogyan működik?}{12}{paragraph.3.1.3.2.2}%
-\select@language {magyar} \contentsline {subsection}{\numberline {3.1.4}Egyéb eszközök}{12}{subsection.3.1.4}%
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.1.4.1}Mailpit}{12}{subsubsection.3.1.4.1}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.4.1.1}Miért Mailpit?}{12}{paragraph.3.1.4.1.1}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.4.1.2}Hogyan működik?}{12}{paragraph.3.1.4.1.2}%
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.1.4.2}Docker --- Konténerizáció}{12}{subsubsection.3.1.4.2}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.4.2.1}Miért Docker?}{13}{paragraph.3.1.4.2.1}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.4.2.2}Hogyan működik?}{13}{paragraph.3.1.4.2.2}%
-\select@language {magyar} \contentsline {subsubsection}{\numberline {3.1.4.3}Git}{13}{subsubsection.3.1.4.3}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.4.3.1}Miért Git?}{13}{paragraph.3.1.4.3.1}%
-\select@language {magyar} \contentsline {paragraph}{\numberline {3.1.4.3.2}Hogyan működik?}{13}{paragraph.3.1.4.3.2}%
-\select@language {magyar} \contentsline {chapter}{\numberline {4}Fejlesztési eszközök és módszertan}{14}{chapter.4}%
-\select@language {magyar} \contentsline {section}{\numberline {4.1}Git}{14}{section.4.1}%
-\select@language {magyar} \contentsline {section}{\numberline {4.2}Trello}{14}{section.4.2}%
-\select@language {magyar} \contentsline {chapter}{\numberline {5}OnlyFix alkalmazás}{15}{chapter.5}%
-\select@language {magyar} \contentsline {section}{\numberline {5.1}Milyen részekből áll?}{15}{section.5.1}%
-\select@language {magyar} \contentsline {section}{\numberline {5.2}Felhasználók}{15}{section.5.2}%
-\select@language {magyar} \contentsline {section}{\numberline {5.3}Jegykezelés --- a folyamat bemutatása}{16}{section.5.3}%
-\select@language {magyar} \contentsline {chapter}{\numberline {6}MAUI Admin kliens}{17}{chapter.6}%
-\select@language {magyar} \contentsline {section}{\numberline {6.1}Miért jó?}{17}{section.6.1}%
-\select@language {magyar} \contentsline {section}{\numberline {6.2}Kiknek szól?}{17}{section.6.2}%
-\select@language {magyar} \contentsline {section}{\numberline {6.3}A folyamat bemutatása}{17}{section.6.3}%
-\select@language {magyar} \contentsline {chapter}{Irodalomjegyz\'ek}{19}{chapter*.2}%
+\select@language {magyar} \contentsline {chapter}{\numberline {1}Bevezetés, a szoftver célja}{3}{chapter.1}%
+\select@language {magyar} \contentsline {chapter}{\numberline {2}Probléma --- Megoldás}{4}{chapter.2}%
+\select@language {magyar} \contentsline {section}{\numberline {2.1}A probléma megfogalmazása}{4}{section.2.1}%
+\select@language {magyar} \contentsline {section}{\numberline {2.2}A megoldás}{4}{section.2.2}%
+\select@language {magyar} \contentsline {chapter}{\numberline {3}A program technológiai háttere}{6}{chapter.3}%
+\select@language {magyar} \contentsline {section}{\numberline {3.1}Vue.js és Inertia.js (webes kliens)}{6}{section.3.1}%
+\select@language {magyar} \contentsline {section}{\numberline {3.2}MAUI kliens alkalmazás}{7}{section.3.2}%
+\select@language {magyar} \contentsline {section}{\numberline {3.3}Laravel}{8}{section.3.3}%
+\select@language {magyar} \contentsline {section}{\numberline {3.4}MySQL adatbázis}{9}{section.3.4}%
+\select@language {magyar} \contentsline {section}{\numberline {3.5}phpMyAdmin}{10}{section.3.5}%
+\select@language {magyar} \contentsline {section}{\numberline {3.6}Mailpit}{11}{section.3.6}%
+\select@language {magyar} \contentsline {section}{\numberline {3.7}Docker}{11}{section.3.7}%
+\select@language {magyar} \contentsline {chapter}{\numberline {4}Fejlesztési eszközök és módszertan}{12}{chapter.4}%
+\select@language {magyar} \contentsline {section}{\numberline {4.1}Git}{12}{section.4.1}%
+\select@language {magyar} \contentsline {section}{\numberline {4.2}Trello}{12}{section.4.2}%
+\select@language {magyar} \contentsline {chapter}{\numberline {5}OnlyFix alkalmazás}{13}{chapter.5}%
+\select@language {magyar} \contentsline {section}{\numberline {5.1}Milyen részekből áll?}{13}{section.5.1}%
+\select@language {magyar} \contentsline {section}{\numberline {5.2}Felhasználók}{13}{section.5.2}%
+\select@language {magyar} \contentsline {section}{\numberline {5.3}Jegykezelés --- a folyamat bemutatása}{14}{section.5.3}%
+\select@language {magyar} \contentsline {chapter}{\numberline {6}MAUI Admin kliens}{15}{chapter.6}%
+\select@language {magyar} \contentsline {section}{\numberline {6.1}Miért jó?}{15}{section.6.1}%
+\select@language {magyar} \contentsline {section}{\numberline {6.2}Kiknek szól?}{15}{section.6.2}%
+\select@language {magyar} \contentsline {section}{\numberline {6.3}A folyamat bemutatása}{15}{section.6.3}%
+\select@language {magyar} \contentsline {chapter}{Irodalomjegyz\'ek}{18}{chapter*.2}%
