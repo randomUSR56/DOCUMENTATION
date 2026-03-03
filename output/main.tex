@@ -1,0 +1,423 @@
+\documentclass[colorlinks]{thesis-kando}
+
+% 1. PDF verzió kezelése
+\pdfminorversion=7
+
+% 2. Magyar nyelv specifikus beállítások (a babel ELŐTT)
+\PassOptionsToPackage{defaults=hu-min}{magyar.ldf}
+
+% 3. Alapvető kódolás és nyelvi csomag
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[magyar]{babel}
+
+% 4. Csomagok
+\usepackage{graphicx,amsmath,amssymb}
+\usepackage{listings,xcolor}
+\usepackage{booktabs,longtable,array}
+\usepackage[normalem]{ulem}
+\usepackage{url}
+\usepackage{fancyvrb}
+
+% URL sortörés
+\def\UrlBreaks{\do\/\do-\do\.\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z\do\0\do\1\do\2\do\3\do\4\do\5\do\6\do\7\do\8\do\9}
+
+% Listings beállítása a magyar karakterekhez
+\lstset{
+	inputencoding=utf8,
+	extendedchars=true,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ö}{{\"o}}1 {ő}{{\H{o}}}1
+    {ú}{{\'u}}1 {ü}{{\"u}}1 {ű}{{\H{u}}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ö}{{\"O}}1 {Ő}{{\H{O}}}1
+    {Ú}{{\'U}}1 {Ü}{{\"U}}1 {Ű}{{\H{U}}}1,
+    breaklines=true,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{teal}
+}
+
+% Footnote stílus
+\footnotestyle{rule=fourth}
+
+% settocdepth - megjelenjen a subsubsection is a tartalomjegyzékben
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{4}
+
+\begin{document}
+
+% --- Címlap metaadatok ---
+\title{Az OnlyFix alkalmazás dokumentációja}
+\author{Dluhi Dániel\\Luczi Alex\\Szoftverfejlesztő- és tesztelő szak}
+\institute{Miskolci SZC Kandó Kálmán Informatikai Technikum}
+\supervisor{Horváth István\\konzulens}
+\city{Miskolc}
+\date{2026}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ============================================================================
+% 1. FEJEZET
+% ============================================================================
+\chapter{Bevezetés, a szoftver célja}
+
+Az OnlyFix szoftvercsomag egy nyílt forráskódú, MIT licenc alatt publikált járműszerviz-menedzsment rendszer, amelynek elsődleges célja, hogy a gépjármű-tulajdonosok, szerelők és rendszerüzemeltetők között hatékony, digitalizált kommunikációs és munkafolyamat-kezelési platformot biztosítson. A szoftvercsomag egy úgynevezett jegykezelő (angolul: \emph{ticketing}) rendszert valósít meg, amelyben a felhasználók CRUD (Create, Read, Update, Delete) műveleteket hajthatnak végre a járműveikkel kapcsolatos hibajegyek felett \cite{ref1}.
+
+A rendszer fő célkitűzése, hogy kiváltsa a hagyományos, papíralapú vagy telefonos szervizkezelési folyamatokat, és egy egységes, webes valamint natív asztali és mobil kliensről egyaránt elérhető digitális munkafelületet nyújtson. A szoftvercsomag két fő komponensből áll:
+
+\begin{itemize}
+\item \textbf{OnlyFix webalkalmazás} (randomUSR56/onlyfix) --- egy Laravel 12 keretrendszerre épülő monolitikus alkalmazás Vue.js 3 frontend réteggel, amely Inertia.js technológiával kapcsolódik a backendhez, valamint egy RESTful API réteggel, amely külső kliensek kiszolgálására is alkalmas.
+\item \textbf{Admin MAUI kliens alkalmazás} (randomUSR56/Admin) --- egy .NET 10 MAUI (Multi-platform App UI) keretrendszerre épülő, natív asztali és mobil kliens alkalmazás, amely kizárólag a Laravel backend RESTful API végpontjaira támaszkodva biztosít adminisztrációs hozzáférést rendszerüzemeltetők számára.
+\end{itemize}
+
+A projekt MIT licenc alatt érhető el, ami azt jelenti, hogy a forráskód szabadon felhasználható, módosítható és terjeszthető, feltéve, hogy az eredeti szerzői jogi nyilatkozat a szoftver minden másolatában megjelenik \cite{ref2}.
+
+% ============================================================================
+% 2. FEJEZET
+% ============================================================================
+\chapter{Probléma --- Megoldás}
+
+\section{A probléma megfogalmazása}
+
+A gépjármű-szervizek mindennapi működése során az ügyfelek jellemzően telefonon vagy személyesen jelentik be a járműveikkel kapcsolatos problémákat. Ez a folyamat számos hatékonysági problémát vet fel: a bejelentések nehezen nyomon követhetők, az állapotváltozásokról nincs automatikus értesítés, a szerelők munkaelosztása manuálisan történik, és a történeti adatok visszakeresése körülményes. Továbbá a szerviz üzemeltetőinek nincs egységes felülete a rendszer átfogó monitorozásához.
+
+\section{A megoldás}
+
+Az OnlyFix szoftvercsomag egy háromszintű szerepkör-alapú hozzáférés-vezérlési rendszert (angolul: \emph{Role-Based Access Control}, röviden RBAC) \cite{ref3} valósít meg, amelyben:
+
+\begin{itemize}
+\item \textbf{Felhasználó (User)}: regisztrálhatja járműveit, hibajegyeket nyithat, nyomon követheti azok állapotát, és lezárhatja a teljesített jegyeket.
+\item \textbf{Szerelő (Mechanic)}: megtekintheti az összes nyitott jegyet, elfogadhatja a munkát, frissítheti a jegy állapotát, és hozzáférhet a statisztikai kimutatásokhoz.
+\item \textbf{Adminisztrátor (Admin)}: teljes körű rendszer-hozzáféréssel rendelkezik, beleértve a felhasználókezelést, a problémakatalógus karbantartását és a rendszer konfigurációját.
+\end{itemize}
+
+A hibajegy életciklusa egy jól definiált munkafolyamatot (angolul: \emph{workflow}) követ:
+
+\begin{verbatim}
+Nyitott (Open) → Kiosztott (Assigned) → Folyamatban (In Progress)
+→ Befejezett (Completed) → Lezárt (Closed)
+\end{verbatim}
+
+Minden állapotátmenet időbélyeggel (angolul: \emph{timestamp}) van ellátva, és egy jegyhez több probléma is társítható az előre definiált problémakatalógusból.
+
+% ============================================================================
+% 3. FEJEZET
+% ============================================================================
+\chapter{A program technológiai háttere}
+
+\section{Eszközök és keretrendszerek}
+
+\subsection{Frontend}
+
+\subsubsection{Vue.js + Inertia.js (webes kliens)}
+
+\paragraph{Miért Vue.js + Inertia.js?}
+A Vue.js egy progresszív JavaScript keretrendszer (angolul: \emph{progressive framework}), amelyet Evan You fejlesztett ki 2014-ben \cite{ref4}. A „progresszív'' jelző arra utal, hogy a keretrendszer fokozatosan adoptálható: egyszerű projektekben minimális konfigurációval használható, míg komplex egyoldalas alkalmazások (angolul: \emph{Single-Page Application}, röviden SPA) fejlesztéséhez is teljes körű eszköztárat biztosít. A projektben a Vue.js 3.5.13-as verzióját alkalmazzuk, amely a Composition API-t helyezi előtérbe a korábbi Options API-val szemben, lehetővé téve a reaktív logika moduláris és újrafelhasználható szervezését.
+
+Az Inertia.js egy úgynevezett „modern monolit'' architektúrát megvalósító könyvtár, amely Jonathan Reinink nevéhez fűződik \cite{ref5}. Az Inertia.js nem egy klasszikus JavaScript keretrendszer, hanem egy összekötő réteg (angolul: \emph{glue layer}), amely lehetővé teszi, hogy egy szerver oldali keretrendszer --- jelen esetben a Laravel --- közvetlenül Vue.js komponenseket renderelhessen anélkül, hogy külön RESTful API-t kellene építeni a webes frontend kiszolgálásához. Az Inertia.js ezt úgy valósítja meg, hogy az első oldalbetöltéskor egy hagyományos, szerver által renderelt HTML-választ küld (angolul: \emph{Server-Side Rendering}, röviden SSR), majd az ezt követő navigációknál XHR (XMLHttpRequest) kérésekkel JSON formátumú adatokat cserél a szerver és a kliens között, így SPA-szerű felhasználói élményt biztosítva \cite{ref5}.
+
+Ez a megoldás lényeges különbséget jelent a MAUI Admin klienshez képest: míg a Vue.js + Inertia.js webes kliens közvetlenül a Laravel web.php útvonalait használja és az Inertia protokollon keresztül kommunikál a szerverrel, addig a MAUI kliens kizárólag a routes/api.php fájlban definiált RESTful API végpontokra küld HTTP kéréseket, és a válaszokat JSON formátumban dolgozza fel.
+
+\paragraph{Hogyan működik?}
+A webes frontend működési mechanizmusa a következő: a Laravel szerver a routes/web.php fájlban definiált útvonalak mentén Inertia-válaszokat generál az Inertia::render() metódus segítségével. Ez a metódus a megadott Vue.js komponens nevét és a hozzá tartozó adatokat (angolul: \emph{props}) egy JSON struktúrában csomagolja, amelyet az Inertia.js kliens oldali adaptere (@inertiajs/vue3) fogad és a megfelelő Vue.js komponensbe injektál. A fejlesztői környezetben a Vite 7.0.4 build eszköz biztosítja a HMR (Hot Module Replacement) funkciót, amely lehetővé teszi a kód módosításainak azonnali, böngésző-frissítés nélküli megjelenítését \cite{ref6}.
+
+A frontend felhasználói felülete a Tailwind CSS 4.1.1 utility-first CSS keretrendszerre épül \cite{ref7}, kiegészítve a Reka UI 2.4.1 headless komponenskönyvtárral, amely akadálymentes (angolul: \emph{accessible}), stílusmentes UI primitíveket biztosít. A TypeScript 5.2.2 típusrendszer használata a fejlesztés során biztosítja a típusbiztonságot (angolul: \emph{type safety}), csökkentve a futásidejű hibák előfordulásának valószínűségét.
+
+\subsubsection{MAUI frontend kliens alkalmazás}
+
+\paragraph{Szerepe}
+Az Admin MAUI kliens alkalmazás a szoftvercsomag második frontendkomponense, amely kizárólag rendszerüzemeltetők és adminisztrátorok számára készült. Feladata, hogy natív asztali (Windows, macOS) és mobil (Android, iOS) platformokon biztosítson hozzáférést az OnlyFix rendszer adminisztrációs funkcióihoz. Az alkalmazás MVVM (Model-View-ViewModel) architekturális mintát követ a CommunityToolkit.Mvvm 8.4.0 csomag segítségével \cite{ref8}, és a .NET beépített függőséginjektálási (angolul: \emph{Dependency Injection}, röviden DI) rendszerét használja a szolgáltatások és nézetmodellek (angolul: \emph{ViewModel}) kezelésére.
+
+\paragraph{Hogyan működik?}
+A MAUI kliens a Laravel backend routes/api.php fájljában definiált RESTful API végpontokkal kommunikál HTTP protokollon keresztül. Az alkalmazás egy típusos HttpClient-et használ (angolul: \emph{typed HttpClient}), amelyet a MauiProgram.cs fájlban regisztrál a DI konténerbe a builder.Services.AddHttpClient<IApiClient, ApiClient>() metódussal. Az alap URL (http://onlyfix.local) a Laravel backend elérési pontjára mutat.
+
+Az autentikáció token-alapú: a felhasználó a POST /api/login végponton hitelesíti magát, és a visszakapott Bearer tokent az AuthTokenStore singleton szolgáltatás tárolja. Ezt követően minden API-hívás az Authorization: Bearer \{token\} HTTP fejléccel kerül elküldésre. Ha a szerver 401 Unauthorized státuszkóddal válaszol, az alkalmazás automatikusan törli a tárolt tokent és a bejelentkezési oldalra navigál.
+
+A navigációs struktúrát a Shell komponens biztosítja, amely egy Flyout oldalsávval rendelkezik a következő szekciókkal: Dashboard (Irányítópult), Users (Felhasználók), Cars (Járművek), Problems (Hibák) és Tickets (Szervizjegyek). A részletes nézetek (pl.\ felhasználó szerkesztése, jegy részletei) push-navigációval érhetők el a Shell útvonalrendszerén keresztül.
+
+\paragraph{Miért MAUI?}
+A .NET MAUI (Multi-platform App UI) a Microsoft által fejlesztett, nyílt forráskódú, platformfüggetlen alkalmazásfejlesztési keretrendszer, amely a Xamarin.Forms utódja \cite{ref9}. A MAUI legfőbb előnye, hogy egyetlen C\# kódbázisból natív alkalmazásokat készíthetünk Windows, macOS, Android és iOS platformokra egyaránt. A projekt a .NET 10-es verzióra épül, amely a legújabb LTS (Long-Term Support) kiadás \cite{ref10}.
+
+A MAUI választását az indokolta, hogy az adminisztrációs kliens számára előnyös a natív platformintegráció (pl.\ operációs rendszer szintű értesítések, fájlrendszer-hozzáférés), miközben a közös kódbázis jelentősen csökkenti a fejlesztési és karbantartási költségeket.
+
+\paragraph{A MAUI kliens és a webes kliens közötti lényeges különbség}
+Fontos kiemelni a két frontend kliens kommunikációs modelljének alapvető különbségét. A Vue.js + Inertia.js webes kliens az úgynevezett „modern monolit'' architektúrát követi: a böngésző a Laravel szerver routes/web.php fájljában definiált útvonalakra küld kéréseket, és az Inertia.js protokoll révén a szerver közvetlenül Vue.js komponenseket és a hozzájuk tartozó adatokat szolgáltatja ki --- ez a megoldás nem igényel külön API réteget a webes frontend számára \cite{ref5}.
+
+Ezzel szemben a MAUI kliens egy teljesen önálló, natív alkalmazás, amely kizárólag a Laravel backend routes/api.php fájljában definiált REST (Representational State Transfer) \cite{ref11} végpontokra támaszkodik. A kommunikáció tisztán HTTP-alapú, JSON formátumú kérés-válasz párokat használ, és a hitelesítés Laravel Sanctum token-alapú mechanizmussal történik \cite{ref12}. Ez a szétválasztás (angolul: \emph{separation of concerns}) lehetővé teszi, hogy a MAUI kliens teljesen független legyen a webes frontendtől, és a backendhez való csatlakozáshoz mindössze az API alap URL-jének és a hitelesítő tokennek az ismeretére van szükség.
+
+\subsection{Backend}
+
+\subsubsection{Laravel}
+
+\paragraph{Miért Laravel?}
+A Laravel egy PHP nyelven írt, nyílt forráskódú, szervermotoron (angolul: \emph{server-side}) futó webalkalmazás-keretrendszer, amelyet Taylor Otwell fejlesztett ki, és amely az MVC (Model-View-Controller) architekturális mintát követi \cite{ref13}. A Laravel 12-es verzióját alkalmazzuk a projektben, amely a PHP 8.2 vagy újabb verziójával kompatibilis.
+
+A Laravel választását több tényező indokolta:
+
+\begin{itemize}
+\item \textbf{Eloquent ORM} (Object-Relational Mapping): az aktív rekord (angolul: \emph{Active Record}) mintát megvalósító adatbázis-absztrakciós réteg, amely PHP objektumokként kezeli az adatbázis tábláit és rekordjait, így a fejlesztőnek nem szükséges nyers SQL lekérdezéseket írnia a legtöbb műveletnél \cite{ref14}.
+\item \textbf{Artisan CLI} (Command-Line Interface): parancssori eszköz, amely automatizálja a fejlesztési feladatokat (migrációk futtatása, tesztadatok generálása, útvonalak listázása stb.) \cite{ref13}.
+\item \textbf{Beépített autentikációs rendszer}: a Laravel Fortify és Sanctum csomagok révén egyszerre támogat SPA-alapú munkamenet-hitelesítést (angolul: \emph{session-based authentication}) és API token-alapú hitelesítést.
+\item \textbf{Migráció-alapú sémadefíníció}: az adatbázis sémájának verziózott, programatikus leírása, amely biztosítja a fejlesztési környezetek közötti konzisztenciát \cite{ref13}.
+\item \textbf{Kiterjedt ökoszisztéma}: a Composer csomagkezelő révén elérhető harmadik féltől származó csomagok (pl.\ Spatie Laravel Permission a szerepkör-kezeléshez \cite{ref15}).
+\end{itemize}
+
+\paragraph{Hogyan működik?}
+A Laravel alkalmazás a kérések fogadásától a válasz kiküldéséig egy jól definiált életciklust (angolul: \emph{request lifecycle}) követ \cite{ref13}:
+
+\begin{enumerate}
+\item A webszerver (jelen esetben Nginx) fogadja a HTTP kérést és továbbítja a PHP-FPM (FastCGI Process Manager) folyamatnak.
+\item A Laravel bootstrapper betölti a konfigurációs fájlokat és az alkalmazás szolgáltatásait (angolul: \emph{Service Providers}).
+\item A kérés áthalad a köztes szoftverek (angolul: \emph{middleware}) láncolatán (pl.\ CSRF-védelem, autentikáció, jogosultság-ellenőrzés).
+\item Az útválasztó (angolul: \emph{Router}) a kérést a megfelelő vezérlőnek (angolul: \emph{Controller}) továbbítja.
+\item A vezérlő az Eloquent ORM-en keresztül lekérdezi vagy módosítja az adatbázist, majd a választ visszaadja.
+\item Webes útvonalak esetén a válasz egy Inertia-válasz (Vue.js komponens + adatok); API útvonalak esetén JSON formátumú válasz.
+\end{enumerate}
+
+A projektben az alkalmazáslogika az app/ könyvtárban található, benne az Http/Controllers/Api/ alkönyvtárban az API vezérlők (AuthController, CarController, ProblemController, TicketController, UserController), a Models/ könyvtárban az Eloquent modellek (User, Car, Problem, Ticket), a Policies/ könyvtárban az erőforrás-szintű jogosultsági politikák (angolul: \emph{Policy}).
+
+\subsection{Adatbázis}
+
+\subsubsection{MySQL --- InnoDB tárolómotor}
+
+Az OnlyFix alkalmazás MySQL 8.0 relációs adatbázis-kezelő rendszert használ az InnoDB tárolómotorral (angolul: \emph{storage engine}) \cite{ref16}. Az InnoDB a MySQL alapértelmezett tárolómotorja, amely ACID (Atomicity, Consistency, Isolation, Durability) tulajdonságokat biztosít a tranzakciók számára \cite{ref16}. Az ACID tulajdonságok garantálják, hogy az adatbázis-műveletek atomiak (vagy teljes egészében végrehajtódnak, vagy egyáltalán nem), konzisztensek (a tranzakció előtti és utáni állapot egyaránt érvényes), izoláltak (a párhuzamosan futó tranzakciók nem zavarják egymást) és tartósak (a véglegesített tranzakciók eredménye nem veszik el rendszerhiba esetén sem).
+
+\paragraph{Miért MySQL?}
+A MySQL választását az indokolta, hogy a Laravel keretrendszer natív támogatást biztosít hozzá, kiterjedt közösségi és vállalati támogatottságú, és a Docker-alapú fejlesztői környezetben egyszerűen konfigurálható. A MySQL 8.0-ás verziója továbbá támogatja a JSON típusú oszlopokat, az ablakfüggvényeket (angolul: \emph{window functions}) és a közös tábla kifejezéseket (angolul: \emph{Common Table Expressions}, röviden CTE) \cite{ref16}.
+
+% Ha van ER diagram, itt szúrd be:
+% \begin{figure}[ht!]
+%     \centering
+%     \includegraphics[width=14cm]{figures/er-diagram}
+%     \caption{Az OnlyFix alkalmazás adatbázisának ER diagramja}
+%     \label{fig-er-diagram}
+% \end{figure}
+
+\paragraph{Az adatbázis séma}
+Az adatbázis séma az alábbi fő entitásokat és relációkat tartalmazza:
+
+\begin{itemize}
+\item \textbf{users}: felhasználók adatai (id, név, e-mail, jelszó, kétfaktoros hitelesítési mezők, időbélyegek). Relációk: hasMany $\rightarrow$ cars, tickets; hasMany $\rightarrow$ assignedTickets (mint szerelő).
+\item \textbf{cars}: járművek adatai (id, user\_id, gyártmány, modell, évjárat, rendszám, alvázszám, szín). Relációk: belongsTo $\rightarrow$ user; hasMany $\rightarrow$ tickets.
+\item \textbf{problems}: problémakatalógus (id, név, kategória [engine, transmission, electrical, brakes, suspension, steering, body, other], leírás, aktív státusz). Relációk: belongsToMany $\rightarrow$ tickets (pivot táblán keresztül).
+\item \textbf{tickets}: szervizjegyek (id, user\_id, mechanic\_id, car\_id, állapot, prioritás [low, medium, high, urgent], leírás, elfogadás időpontja, befejezés időpontja). Relációk: belongsTo $\rightarrow$ user, mechanic, car; belongsToMany $\rightarrow$ problems.
+\item \textbf{ticket\_problems}: pivot tábla (id, ticket\_id, problem\_id, megjegyzések). Egyedi megszorítás (angolul: \emph{unique constraint}) a [ticket\_id, problem\_id] pároson.
+\item \textbf{roles, permissions} és kapcsolódó pivot táblák: a Spatie Laravel Permission csomag által kezelt RBAC struktúra \cite{ref15}.
+\end{itemize}
+
+\subsubsection{phpMyAdmin}
+
+\paragraph{Miért phpMyAdmin?}
+A phpMyAdmin egy nyílt forráskódú, PHP-ben írt webes adatbázis-adminisztrációs eszköz, amely grafikus felhasználói felületet biztosít a MySQL adatbázis kezeléséhez \cite{ref17}. A fejlesztési folyamat során a phpMyAdmin lehetővé teszi az adatbázis tartalmának vizuális böngészését, SQL lekérdezések futtatását, és a táblák struktúrájának ellenőrzését anélkül, hogy parancssori eszközöket kellene használni.
+
+\paragraph{Hogyan működik?}
+A phpMyAdmin a Docker Compose konfigurációban egy önálló konténerként fut (onlyfix\_phpmyadmin), és a http://phpmyadmin.onlyfix.local:8080 címen érhető el. A konténer automatikusan csatlakozik a MySQL konténerhez a belső Docker hálózaton keresztül.
+
+\subsection{Egyéb eszközök}
+
+\subsubsection{Mailpit}
+
+\paragraph{Miért Mailpit?}
+A Mailpit egy könnyűsúlyú, nyílt forráskódú e-mail tesztelő eszköz, amely egy helyi SMTP szervert és egy webes felületet biztosít a fejlesztés során küldött e-mailek elfogásához és megtekintéséhez \cite{ref18}. A Mailpit használatával a fejlesztők anélkül tesztelhetik az e-mail küldési funkcionalitást, hogy valódi e-mail szolgáltatóhoz kellene csatlakozniuk.
+
+\paragraph{Hogyan működik?}
+A Mailpit a Docker Compose konfigurációban egy önálló konténerként fut, amely az SMTP forgalmat az 1025-ös porton fogadja, a webes felület pedig a 8025-ös porton érhető el (http://mailpit.onlyfix.local:8025). A Laravel .env konfigurációjában az SMTP szerver címeként a Mailpit konténer belső IP-címe van megadva, így minden, az alkalmazás által küldött e-mail a Mailpit felületén jelenik meg.
+
+\subsubsection{Docker --- Konténerizáció}
+
+A Docker egy nyílt forráskódú konténerizációs platform, amely lehetővé teszi alkalmazások és azok függőségeinek egységes csomagolását, szállítását és futtatását úgynevezett konténerekben (angolul: \emph{containers}) \cite{ref19}. A konténerek a virtuális gépekhez hasonlóan izolált futtatási környezetet biztosítanak, de lényegesen kisebb erőforrás-igénnyel, mivel az operációs rendszer kernelét megosztva használják.
+
+\paragraph{Miért Docker?}
+A Docker használata a fejlesztési környezet reprodukálhatóságát biztosítja: minden fejlesztő azonos operációs rendszertől független környezetben dolgozhat, függetlenül a saját operációs rendszerétől. A „works on my machine'' probléma kiküszöbölése mellett a Docker lehetővé teszi a szolgáltatások (webszerver, adatbázis, e-mail szerver, cache) egymástól független skálázását és kezelését.
+
+\paragraph{Hogyan működik?}
+Az OnlyFix projekt egy docker-compose.yml fájlt használ, amely az alábbi hét szolgáltatás-konténert definiálja:
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{lll}
+		\hline
+		\textbf{Konténer neve} & \textbf{Szolgáltatás} & \textbf{Leírás} \\ \hline
+		onlyfix\_app & PHP-FPM & Laravel backend alkalmazás \\
+		onlyfix\_nginx & Nginx & Webszerver, reverse proxy \\
+		onlyfix\_node & Node.js 20 & Vite fejlesztői szerver (HMR) \\
+		onlyfix\_db & MySQL 8.0 & Relációs adatbázis \\
+		onlyfix\_mailpit & Mailpit & E-mail tesztelés \\
+		onlyfix\_queue & PHP-FPM & Laravel Queue Worker \\
+		onlyfix\_phpmyadmin & phpMyAdmin & Adatbázis-adminisztráció \\ \hline
+	\end{tabular}
+	\caption{Docker szolgáltatás-konténerek}
+	\label{tab-docker}
+\end{table}
+
+A konténerek egy belső Docker bridge hálózaton (172.20.0.0/16 alhálózat) kommunikálnak egymással, rögzített IP-címekkel.
+
+\subsubsection{Git}
+
+\paragraph{Miért Git?}
+A Git egy elosztott verziókezelő rendszer (angolul: \emph{Distributed Version Control System}, röviden DVCS), amelyet Linus Torvalds fejlesztett ki 2005-ben \cite{ref20}. A Git lehetővé teszi a forráskód változásainak nyomon követését, a fejlesztési ágak (angolul: \emph{branches}) párhuzamos kezelését, valamint a csapattagok közötti együttműködést konfliktuskezelési (angolul: \emph{merge conflict resolution}) mechanizmusokkal.
+
+\paragraph{Hogyan működik?}
+A projektben a Git-et a GitHub platformmal integrálva használjuk. Az OnlyFix repository dev ága szolgál a legfrissebb fejlesztési változtatások integrációs ágaként, míg a main ág a stabil kiadásokat tartalmazza. A dev ág védett (angolul: \emph{protected branch}), ami azt jelenti, hogy közvetlen push műveletekkel nem módosítható --- a változtatások kizárólag pull request-eken (angolul: \emph{lehúzási kérelmek}) keresztül kerülhetnek be, amelyeket legalább egy másik fejlesztőnek jóvá kell hagynia. Az Admin repository a master ágat használja alapértelmezett ágként.
+
+% ============================================================================
+% 4. FEJEZET
+% ============================================================================
+\chapter{Fejlesztési eszközök és módszertan}
+
+\section{Git}
+
+A verziókezelés Git segítségével történik, a forráskód a GitHub platformon van tárolva két különálló repositoryban. A fejlesztési munkafolyamat a \emph{feature branch} stratégiát követi: minden új funkció vagy hibajavítás egy külön ágon készül el, majd pull request formájában kerül beolvasztásra az integráló ágba.
+
+\section{Trello}
+
+A feladatkezelés és a projektmenedzsment a Trello platformon keresztül történik, amely egy Kanban-alapú projektvezető eszköz. A Trello táblákon a feladatok állapota (pl.\ „Teendő'', „Folyamatban'', „Átvizsgálásra vár'', „Kész'') vizuálisan nyomon követhető, és a fejlesztési sprintek tervezése is itt zajlik.
+
+% ============================================================================
+% 5. FEJEZET
+% ============================================================================
+\chapter{OnlyFix alkalmazás}
+
+\section{Milyen részekből áll?}
+
+Az OnlyFix alkalmazás az alábbi fő modulokból épül fel:
+
+\begin{itemize}
+\item \textbf{Autentikációs modul}: felhasználók regisztrációja, bejelentkezés, kijelentkezés, jelszókezelés. A Laravel Fortify és Sanctum csomagokra épül, és támogatja a kétfaktoros hitelesítést (angolul: \emph{Two-Factor Authentication}, röviden 2FA).
+\item \textbf{Járműkezelő modul}: a felhasználók regisztrálhatják járműveiket (gyártmány, modell, évjárat, rendszám, alvázszám, szín), és megtekinthetik az adott járműhöz tartozó szervizjegyeket.
+\item \textbf{Problémakatalógus modul}: 56 előre definiált járműhiba 8 kategóriában (motor, sebességváltó, elektromos, fékek, futómű, kormányzás, karosszéria, egyéb). A szerelők és adminisztrátorok bővíthetik, módosíthatják a katalógust.
+\item \textbf{Jegykezelő (ticketing) modul}: a rendszer központi eleme, ahol a felhasználók szervizjegyeket hozhatnak létre, a szerelők elfogadhatják és feldolgozhatják azokat, és a felhasználók lezárhatják a teljesített jegyeket.
+\item \textbf{Statisztikai modul}: valós idejű statisztikák a jegyek állapotáról, a leggyakoribb problémákról, a szerelők munkaelosztásáról.
+\item \textbf{Felhasználókezelő modul} (adminisztrátor): felhasználók listázása, létrehozása, módosítása, törlése, szerepkörök hozzárendelése.
+\end{itemize}
+
+\section{Felhasználók}
+
+A rendszer három felhasználói szerepkört definiál, amelyeket a Spatie Laravel Permission csomag kezel \cite{ref15}:
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{ll}
+		\hline
+		\textbf{Szerepkör} & \textbf{Jogosultságok} \\ \hline
+		Felhasználó & Saját járművek és jegyek kezelése, szerviz előzmények megtekintése \\
+		Szerelő & Összes jegy megtekintése, munka elfogadása, állapotok frissítése \\
+		Adminisztrátor & Teljes rendszer-hozzáférés, felhasználókezelés, rendszerkonfiguráció \\ \hline
+	\end{tabular}
+	\caption{Felhasználói szerepkörök és jogosultságok}
+	\label{tab-roles}
+\end{table}
+
+\section{Jegykezelés --- a folyamat bemutatása}
+
+A szervizjegy életciklusa a következő lépéseket foglalja magában:
+
+\begin{enumerate}
+\item \textbf{Jegy létrehozása (Open)}: A felhasználó kiválasztja az érintett járművet, megadja a prioritást (alacsony, közepes, magas, sürgős), szöveges leírást ír, és a problémakatalógusból kiválasztja a releváns problémákat. A jegy „Nyitott'' állapotban jön létre.
+\item \textbf{Jegy elfogadása (Assigned)}: Egy szerelő megtekinti a nyitott jegyeket és elfogadja a munkát a POST /tickets/\{id\}/accept végponton. A jegy állapota „Kiosztott''-ra változik, és a mechanic\_id mező kitöltődik.
+\item \textbf{Munka megkezdése (In Progress)}: A szerelő jelzi, hogy megkezdte a munkát a POST /tickets/\{id\}/start végponton. Az állapot „Folyamatban''-ra változik.
+\item \textbf{Munka befejezése (Completed)}: A szerelő jelzi a munka befejezését a POST /tickets/\{id\}/complete végponton. Az állapot „Befejezett''-re változik, és a completed\_at időbélyeg kitöltődik.
+\item \textbf{Jegy lezárása (Closed)}: A felhasználó (vagy adminisztrátor) lezárja a jegyet a POST /tickets/\{id\}/close végponton, ezzel nyugtázva a szerviz teljesítését.
+\end{enumerate}
+
+% ============================================================================
+% 6. FEJEZET
+% ============================================================================
+\chapter{MAUI Admin kliens}
+
+\section{Miért jó?}
+
+Az Admin MAUI kliens alkalmazás egy natív, platformfüggetlen asztali és mobil alkalmazás, amely az OnlyFix rendszer teljes adminisztrációs funkcionalitását egységes felületen teszi elérhetővé. A natív alkalmazás előnye a webes felülettel szemben, hogy gyorsabb válaszidőket, platformspecifikus felhasználói élményt és offline-képességeket biztosíthat. Az MVVM architektúra révén a kód jól tesztelhető és karbantartható.
+
+\section{Kiknek szól?}
+
+Az Admin kliens elsősorban rendszerüzemeltetőknek, szervizvezetőknek és adminisztrátoroknak készült, akiknek átfogó rálátásra van szükségük a rendszer teljes működésére. A kliens lehetővé teszi:
+
+\begin{itemize}
+\item A felhasználók, járművek, problémák és jegyek teljes körű kezelését (CRUD műveletek).
+\item Az irányítópulton (angolul: \emph{Dashboard}) valós idejű statisztikák megtekintését.
+\item A jegy-munkafolyamat állapotátmeneteinek kezelését.
+\item A rendszer egészségének monitorozását az API health endpoint segítségével.
+\end{itemize}
+
+\section{A folyamat bemutatása}
+
+\begin{enumerate}
+\item \textbf{Bejelentkezés}: az alkalmazás indításakor az AuthTokenStore ellenőrzi, hogy létezik-e tárolt Bearer token. Ha igen, a felhasználó közvetlenül az irányítópultra kerül; ha nem, a bejelentkezési oldalra navigál. A bejelentkezés a POST /api/login végpontra küldött kéréssel történik.
+\item \textbf{Navigáció}: a bejelentkezést követően a felhasználó a bal oldali Flyout navigációs sáv segítségével válthat a Dashboard, Users, Cars, Problems és Tickets szekciók között.
+\item \textbf{CRUD műveletek}: minden szekció listanézetben jeleníti meg az entitásokat, amelyekre kattintva részletes nézet nyílik (push navigáció). Az entitások szerkeszthetők és törölhetők; új entitások az adott szekció létrehozási formján keresztül hozhatók létre.
+\item \textbf{Automatikus kijelentkezés}: ha bármely API hívás 401 Unauthorized választ kap, az alkalmazás automatikusan törli a tárolt tokent és a bejelentkezési oldalra navigál.
+\end{enumerate}
+
+% ============================================================================
+% IRODALOMJEGYZÉK
+% ============================================================================
+\begin{thebibliography}{20}
+\addcontentsline{toc}{chapter}{\bibname}
+
+\bibitem{ref1}
+R.~T. Fielding, ``Architectural Styles and the Design of Network-based Software Architectures,'' University of California, Irvine, 2000.
+
+\bibitem{ref2}
+Open Source Initiative, ``The MIT License,'' [Online]. Available: \url{https://opensource.org/licenses/MIT}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref3}
+D.~F. Ferraiolo, R.~Sandhu, S.~Gavrila, D.~R. Kuhn és R.~Chandramouli, ``Proposed NIST Standard for Role-Based Access Control,'' \emph{ACM Transactions on Information and System Security}, vol.~4, no.~3, pp.~224--274, 2001.
+
+\bibitem{ref4}
+Vue.js, ``Vue.js --- The Progressive JavaScript Framework,'' [Online]. Available: \url{https://vuejs.org/guide/introduction.html}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref5}
+Inertia.js, ``Inertia.js --- The Modern Monolith,'' [Online]. Available: \url{https://inertiajs.com/}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref6}
+Vite, ``Vite --- Next Generation Frontend Tooling,'' [Online]. Available: \url{https://vitejs.dev/guide/}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref7}
+Tailwind Labs, ``Tailwind CSS --- Rapidly build modern websites without ever leaving your HTML,'' [Online]. Available: \url{https://tailwindcss.com/docs}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref8}
+Microsoft, ``MVVM Toolkit --- .NET Community Toolkit,'' [Online]. Available: \url{https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref9}
+Microsoft, ``What is .NET MAUI?,'' [Online]. Available: \url{https://learn.microsoft.com/en-us/dotnet/maui/what-is-maui}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref10}
+Microsoft, ``.NET 10 --- What's New,'' [Online]. Available: \url{https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-10/overview}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref11}
+R.~T. Fielding, ``Representational State Transfer (REST),'' in \emph{Architectural Styles and the Design of Network-based Software Architectures}, Irvine, University of California, Irvine, 2000, Chapter~5.
+
+\bibitem{ref12}
+Laravel, ``Laravel Sanctum --- API Token Authentication,'' [Online]. Available: \url{https://laravel.com/docs/12.x/sanctum}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref13}
+Laravel, ``Laravel --- The PHP Framework for Web Artisans,'' [Online]. Available: \url{https://laravel.com/docs/12.x}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref14}
+Laravel, ``Eloquent: Getting Started,'' [Online]. Available: \url{https://laravel.com/docs/12.x/eloquent}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref15}
+Spatie, ``Laravel Permission --- Associate users with roles and permissions,'' [Online]. Available: \url{https://spatie.be/docs/laravel-permission/v6/introduction}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref16}
+Oracle Corporation, ``MySQL 8.0 Reference Manual --- InnoDB Storage Engine,'' [Online]. Available: \url{https://dev.mysql.com/doc/refman/8.0/en/innodb-storage-engine.html}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref17}
+phpMyAdmin, ``phpMyAdmin --- Bringing MySQL to the web,'' [Online]. Available: \url{https://www.phpmyadmin.net/docs/}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref18}
+Mailpit, ``Mailpit --- Email and SMTP testing tool with API for developers,'' [Online]. Available: \url{https://github.com/axllent/mailpit}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref19}
+Docker, Inc., ``Docker Documentation --- What is a container?,'' [Online]. Available: \url{https://docs.docker.com/get-started/overview/}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref20}
+Git, ``Git --- Distributed Version Control System,'' [Online]. Available: \url{https://git-scm.com/doc}. [Hozzáférés dátuma: 26 02 2026].
+
+\end{thebibliography}
+
+\end{document}
