@@ -161,6 +161,24 @@ A Laravel alkalmazás a kérések fogadásától a válasz kiküldéséig egy j�
 
 A projektben az alkalmazáslogika az app/ könyvtárban található, benne az Http/Controllers/Api/ alkönyvtárban az API vezérlők (AuthController, CarController, ProblemController, TicketController, UserController), a Models/ könyvtárban az Eloquent modellek (User, Car, Problem, Ticket), a Policies/ könyvtárban az erőforrás-szintű jogosultsági politikák (angolul: \emph{Policy}).
 
+\section{Swagger API dokumentáció}
+
+Az OnlyFix RESTful API-jának dokumentálásához a Swagger (hivatalos nevén OpenAPI Specification) eszközkészletet alkalmazzuk \cite{ref21}. A Swagger egy interaktív, böngészőből elérhető felületet biztosít, amelyen keresztül az összes API végpont --- azok paraméterei, kérés- és válaszstruktúrái, valamint a szükséges autentikáció --- áttekinthető és közvetlenül kipróbálható, anélkül hogy külön HTTP-kliens eszközre (pl.\ Postman) volna szükség.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{ll}
+		\hline
+		\textbf{Konfiguráció} & \textbf{Swagger elérési URL} \\ \hline
+		DNS engedélyezve (ajánlott) & \url{http://onlyfix.local/swagger} \\
+		DNS nélkül (localhost) & \url{http://localhost/swagger} \\ \hline
+	\end{tabular}
+	\caption{A Swagger felület elérési URL-jei az alkalmazás inicializálási módjától függően}
+	\label{tab-swagger}
+\end{table}
+
+A Swagger felület elérési URL-je az alkalmazás inicializálásának módjától függ. \textbf{DNS-sel inicializált} környezetben (amikor a rendszer a \texttt{onlyfix.local} helyi doménnevet használja) a felület a \url{http://onlyfix.local/swagger} címen érhető el. \textbf{DNS nélkül} (azaz csak localhost-alapú konfigurációban) a felület a \url{http://localhost/swagger} címen érhető el.
+
 \section{MySQL adatbázis}
 
 Az OnlyFix alkalmazás MySQL 8.0 relációs adatbázis-kezelő rendszert használ az InnoDB tárolómotorral (angolul: \emph{storage engine}) \cite{ref16}. Az InnoDB a MySQL alapértelmezett tárolómotorja, amely ACID (Atomicity, Consistency, Isolation, Durability) tulajdonságokat biztosít a tranzakciók számára \cite{ref16}. Az ACID tulajdonságok garantálják, hogy az adatbázis-műveletek atomiak (vagy teljes egészében végrehajtódnak, vagy egyáltalán nem), konzisztensek (a tranzakció előtti és utáni állapot egyaránt érvényes), izoláltak (a párhuzamosan futó tranzakciók nem zavarják egymást) és tartósak (a véglegesített tranzakciók eredménye nem veszik el rendszerhiba esetén sem).
@@ -366,7 +384,7 @@ Az Admin kliens elsősorban rendszerüzemeltetőknek, szervizvezetőknek és adm
 % ============================================================================
 % IRODALOMJEGYZÉK
 % ============================================================================
-\begin{thebibliography}{20}
+\begin{thebibliography}{21}
 \addcontentsline{toc}{chapter}{\bibname}
 
 \bibitem{ref1}
@@ -428,6 +446,9 @@ Docker, Inc., ``Docker Documentation --- What is a container?,'' [Online]. Avail
 
 \bibitem{ref20}
 Git, ``Git --- Distributed Version Control System,'' [Online]. Available: \url{https://git-scm.com/doc}. [Hozzáférés dátuma: 26 02 2026].
+
+\bibitem{ref21}
+SmartBear Software, ``Swagger --- API Documentation \& Design Tools for Teams,'' [Online]. Available: \url{https://swagger.io/docs/}. [Hozzáférés dátuma: 31 03 2026].
 
 \end{thebibliography}
 
